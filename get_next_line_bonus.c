@@ -6,11 +6,11 @@
 /*   By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 19:50:46 by eralonso          #+#    #+#             */
-/*   Updated: 2022/11/08 19:34:10 by eralonso         ###   ########.fr       */
+/*   Updated: 2022/11/10 10:23:49 by eralonso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	"get_next_line.h"
+#include	"get_next_line_bonus.h"
 
 void	*ft_free(char **str)
 {
@@ -39,7 +39,7 @@ void	ft_read_file(t_data *data)
 			data->err = !ft_free(&(data->buffer));
 		else
 		{
-			if (!*data->line)
+			if (!*data->line && !data->buffer)
 				ft_free(&(data->buffer));
 			else
 			{
@@ -99,22 +99,21 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
+	(data[fd]).fd = fd;
+	(data[fd]).err = 0;
 	if (!(data[fd]).buffer)
 	{
 		(data[fd]).buffer = ft_strdup("");
 		if (!(data[fd]).buffer)
 			return (NULL);
 	}
-	(data[fd]).fd = fd;
-	(data[fd]).err = 0;
 	if (!(data[fd]).err)
 		ft_read_file(&(data[fd]));
 	if (!(data[fd]).err)
 		ft_get_line(&(data[fd]));
 	if (!(data[fd]).err)
 		ft_clean_buffer(&(data[fd]));
-	if (((data[fd]).err && (data[fd]).buffer) || !ft_strchr((data[fd]).line, '\n'))
+	if ((data[fd]).err || !ft_strchr((data[fd]).line, '\n'))
 		ft_free(&((data[fd]).buffer));
-	data[fd].fd = 0;
 	return ((data[fd]).line);
 }

@@ -6,7 +6,7 @@
 /*   By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 19:50:46 by eralonso          #+#    #+#             */
-/*   Updated: 2022/11/08 16:45:35 by eralonso         ###   ########.fr       */
+/*   Updated: 2022/11/10 12:24:17 by eralonso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	ft_read_file(t_data *data)
 			data->err = !ft_free(&(data->buffer));
 		else
 		{
-			if (!*data->line)
+			if (!*data->line && !data->buffer)
 				ft_free(&(data->buffer));
 			else
 			{
@@ -57,7 +57,7 @@ void	ft_get_line(t_data *data)
 {
 	int	len;
 
-	if (!data->buffer || !*data->buffer)
+	if (!*data->buffer)
 	{
 		data->line = NULL;
 		return ;
@@ -75,8 +75,6 @@ void	ft_clean_buffer(t_data *data)
 	char	*aux;
 	int		start;
 
-	if (!data->buffer)
-		return ;
 	start = 0;
 	while (data->buffer[start] && data->buffer[start] != '\n')
 		start++;
@@ -113,7 +111,7 @@ char	*get_next_line(int fd)
 		ft_get_line(&data);
 	if (!data.err)
 		ft_clean_buffer(&data);
-	if ((data.err && data.buffer) || !ft_strchr(data.line, '\n'))
+	if (data.err || !ft_strchr(data.line, '\n'))
 		ft_free(&(data.buffer));
 	return (data.line);
 }

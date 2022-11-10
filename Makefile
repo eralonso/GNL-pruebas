@@ -6,7 +6,7 @@
 #    By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/05 15:44:36 by eralonso          #+#    #+#              #
-#    Updated: 2022/11/05 16:02:36 by eralonso         ###   ########.fr        #
+#    Updated: 2022/11/10 12:16:27 by eralonso         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,12 @@ SRC		=	$(addsuffix .c, ${FILES})
 OBJ		=	$(addprefix ${ODIR}, $(addsuffix .o, ${FILES}))
 DEP		=	$(addsuffix .d, $(basename ${OBJ}))
 
+BFILES	=	$(addsuffix _bonus, ${FILES})
+
+SRCB		=	$(addsuffix .c, ${BFILES})
+OBJB		=	$(addprefix ${ODIR}, $(addsuffix .o, ${BFILES}))
+DEPB		=	$(addsuffix .d, $(basename ${OBJB}))
+
 CFLAGS	=	-Wall -Wextra -Werror -D BUFFER_SIZE=10
 AR		=	ar -src
 RM		=	rm -rf
@@ -39,8 +45,20 @@ ${ODIR}%.o	:	%.c ${MK}
 all			:
 	@$(MAKE) ${NAME}
 
+bonus		:
+	@$(MAKE) BONUS=1 all
+
+ifndef BONUS
+
 ${NAME}		:: ${OBJ}
 	@${AR} ${NAME} ${OBJ}
+
+else
+
+${NAME}		:: ${OBJB}
+	@${AR} ${NAME} ${OBJB}
+
+endif
 
 ${NAME}		::
 	@echo "\033[1;33mNothing to be done for 'gnl'\033[0m"
@@ -49,7 +67,7 @@ ${NAME}		::
 
 clean		:
 	@${RM} ${ODIR} ./a.out
-	@echo	"\033[1;31mObjects and dependences have been removed\033[0m"
+	@echo	"\033[1;31mObjects and dependencies have been removed\033[0m"
 
 fclean		:
 	@$(MAKE) clean

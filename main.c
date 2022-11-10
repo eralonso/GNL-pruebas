@@ -6,7 +6,7 @@
 /*   By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 23:21:41 by eralonso          #+#    #+#             */
-/*   Updated: 2022/11/08 19:34:47 by eralonso         ###   ########.fr       */
+/*   Updated: 2022/11/10 12:47:22 by eralonso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,12 @@ void	ft_memset(void *s, int c, int len)
 	}
 }
 
-int	ft_intdig(int *cls, int i)
+int	ft_numdig(int *cls, int i)
 {
 	int	j;
 
 	j = 0;
-	while (cls[j])
+	while (j <= (i + 1))
 	{
 		if (cls[j] == i)
 			return (1);
@@ -96,15 +96,24 @@ int	main(int ac, char **av)
 		i = -1;
 		while (files[++i])
 		{
-			printf("\033[1;32m\n%s\n\n\033[0m", files[i]);
+			j = 1;
 			fd[0] = open(files[i], O_RDONLY);
+			if (fd[0] == -1)
+			{
+				printf("\033[1;31mHa habido un problema a la hora de abrir el archivo.\nCompruebe que el archivo pasado está correcto.\n\033[0m");
+				return (0);
+			}
+			printf("\033[1;32m\n%s\n\n\033[0m", files[i]);
 			str[0] = get_next_line(fd[0]);
 			while (str[0] && *(str[0]))
 			{
-				printf("\tget_next_line == %s", str[0]);
+				printf("\tline %i: %s", j, str[0]);
+				if (!ft_strchr(str[0], '\n'))
+					printf("\n");
 				str[0] = get_next_line(fd[0]);
+				j++;
 			}
-			printf("\tget_next_line == %s\n", str[0]);
+			printf("\tline %i: %s\n", j, str[0]);
 			close(fd[0]);
 		}
 	}
@@ -120,36 +129,42 @@ int	main(int ac, char **av)
 		{
 			files[nfl] = av[i];
 			fd[nfl] = open(files[nfl], O_RDONLY);
-			printf("fd[%i] == %i\n", nfl, fd[nfl]);
 			str[nfl] = get_next_line(fd[nfl]);
 			nfl++;
 		}
 		nfl--;
 		j = 0;
-		printf("str[%i] == %s\n", 0, str[0]);
-		printf("str[%i] == %s\n", 1, str[1]);
 		while (ft_strexist(str, nfl))
 		{
 			i = 0;
 			while (i <= nfl)
 			{
-				if (ft_intdig(cls, i) && str[i])
+				if (!str[i] && !ft_numdig(cls, i))
 				{
-					printf("\033[1;32m\n\n%s:\033[0m", files[i]);
-					printf("%s", str[i]);
-					str[i] = get_next_line(fd[i]);
-				}
-				if (!str[i])
-				{
-					printf("\n2\n");
+					printf("\033[1;32m\n%s: \033[0m", files[i]);
+					printf("%s\n", str[i]);
 					cls[j++] = i;
-					close(fd[i]);
+				}
+				if (!ft_numdig(cls, i))
+				{
+					printf("\033[1;32m\n%s: \033[0m%s", files[i], str[i]);
+					if (!ft_strchr(str[i], '\n'))
+						printf("\n");
+					str[i] = get_next_line(fd[i]);
+					if (!ft_strexist(str, nfl))
+						printf("\033[1;32m\n%s: \033[0m%s", files[i], str[i]);
 				}
 				i++;
 			}
 		}
+		i = 0;
+		while (i <= nfl)
+		{
+			close(fd[i]);
+			i++;
+		}
 	}
 	else
-		printf("\033[1;31m\nEl formato especificado no es correcto. Pruebe con uno de los formatos siguientes:\n\t1.mandatory\n\t2.bonus\n");
+		printf("\033[1;31m\nEl formato especificado no es correcto. Pruebe con uno de los formatos siguientes:\033[0m\n\t\033[1;33m1.mandatory\n\t2.bonus\n\033[0m");
 	return (0);
 }
