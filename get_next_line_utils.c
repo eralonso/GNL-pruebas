@@ -6,12 +6,11 @@
 /*   By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 19:51:28 by eralonso          #+#    #+#             */
-/*   Updated: 2022/11/08 01:32:15 by eralonso         ###   ########.fr       */
+/*   Updated: 2022/11/10 11:41:26 by eralonso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"get_next_line.h"
-#include	<stdio.h>
 
 int	ft_strlen(char *str)
 {

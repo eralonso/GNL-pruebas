@@ -6,7 +6,7 @@
 /*   By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 19:49:22 by eralonso          #+#    #+#             */
-/*   Updated: 2022/11/08 01:36:38 by eralonso         ###   ########.fr       */
+/*   Updated: 2022/11/10 11:42:09 by eralonso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@ typedef struct s_data {
 	int		fd;
 	int		err;
 }			t_data;
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE (int)1
+# endif
 
 void	ft_read_file(t_data *data);
 void	ft_get_line(t_data *data);

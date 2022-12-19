@@ -6,7 +6,7 @@
 /*   By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 19:50:46 by eralonso          #+#    #+#             */
-/*   Updated: 2022/11/10 12:24:17 by eralonso         ###   ########.fr       */
+/*   Updated: 2022/11/10 13:17:08 by eralonso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,7 @@ void	ft_read_file(t_data *data)
 			data->err = !ft_free(&(data->buffer));
 		else
 		{
-			if (!*data->line && !data->buffer)
-				ft_free(&(data->buffer));
-			else
+			if (*data->line || data->buffer)
 			{
 				data->line[bytes] = '\0';
 				data->buffer = ft_strjoin(data->buffer, data->line);
@@ -95,8 +93,6 @@ char	*get_next_line(int fd)
 {
 	static t_data	data;
 
-	data.fd = fd;
-	data.err = 0;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!data.buffer)
@@ -105,6 +101,8 @@ char	*get_next_line(int fd)
 		if (!data.buffer)
 			return (NULL);
 	}
+	data.fd = fd;
+	data.err = 0;
 	if (!data.err)
 		ft_read_file(&data);
 	if (!data.err)

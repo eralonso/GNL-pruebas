@@ -6,16 +6,28 @@
 /*   By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 23:21:41 by eralonso          #+#    #+#             */
-/*   Updated: 2022/11/10 12:47:22 by eralonso         ###   ########.fr       */
+/*   Updated: 2022/12/19 13:27:36 by eralonso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	"get_next_line_bonus.h"
+#include	"get_next_line.h"
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<fcntl.h>
 #include	<unistd.h>
 #include	<limits.h>
+
+int	ft_stringlen(char *str)
+{
+	int	len;
+
+	len = 0;
+	if (!str)
+		return (len);
+	while (str[len])
+		len++;
+	return (len);
+}
 
 void	ft_memset(void *s, int c, int len)
 {
@@ -97,17 +109,23 @@ int	main(int ac, char **av)
 		while (files[++i])
 		{
 			j = 1;
-			fd[0] = open(files[i], O_RDONLY);
+			if (ft_stringlen(files[i]) == 1 && files[i][0] == '0')
+			{
+				files[i] = "Standard Input";
+				fd[0] = 0;
+			}
+			else
+				fd[0] = open(files[i], O_RDONLY);
 			if (fd[0] == -1)
 			{
-				printf("\033[1;31mHa habido un problema a la hora de abrir el archivo.\nCompruebe que el archivo pasado está correcto.\n\033[0m");
+				printf("\033[1;91mHa habido un problema a la hora de abrir el archivo.\nCompruebe que el archivo pasado está correcto.\n\033[0m");
 				return (0);
 			}
-			printf("\033[1;32m\n%s\n\n\033[0m", files[i]);
+			printf("\033[1;92m\n%s\n\n\033[0m", files[i]);
 			str[0] = get_next_line(fd[0]);
 			while (str[0] && *(str[0]))
 			{
-				printf("\tline %i: %s", j, str[0]);
+				printf("\t\033[1;93mline %i:\033[0m %s", j, str[0]);
 				if (!ft_strchr(str[0], '\n'))
 					printf("\n");
 				str[0] = get_next_line(fd[0]);
@@ -128,7 +146,24 @@ int	main(int ac, char **av)
 		while (av[++i])
 		{
 			files[nfl] = av[i];
-			fd[nfl] = open(files[nfl], O_RDONLY);
+			if (ft_stringlen(files[nfl]) == 1 && files[nfl][0] == '0')
+			{
+				files[nfl] = "Standard Input";
+				fd[nfl] = 0;
+			}
+			else
+				fd[nfl] = open(files[nfl], O_RDONLY);
+			if (fd[nfl] == -1)
+			{
+				i = 0;
+				while (i <= nfl)
+				{
+					close(fd[i]);
+					i++;
+				}
+				printf("\033[1;91mHa habido un problema a la hora de abrir el archivo.\nCompruebe que el archivo pasado está correcto.\n\033[0m");
+				return (0);
+			}
 			str[nfl] = get_next_line(fd[nfl]);
 			nfl++;
 		}
@@ -141,18 +176,18 @@ int	main(int ac, char **av)
 			{
 				if (!str[i] && !ft_numdig(cls, i))
 				{
-					printf("\033[1;32m\n%s: \033[0m", files[i]);
+					printf("\033[1;92m\n%s: \033[0m", files[i]);
 					printf("%s\n", str[i]);
 					cls[j++] = i;
 				}
 				if (!ft_numdig(cls, i))
 				{
-					printf("\033[1;32m\n%s: \033[0m%s", files[i], str[i]);
+					printf("\033[1;92m\n%s: \033[0m%s", files[i], str[i]);
 					if (!ft_strchr(str[i], '\n'))
 						printf("\n");
 					str[i] = get_next_line(fd[i]);
 					if (!ft_strexist(str, nfl))
-						printf("\033[1;32m\n%s: \033[0m%s", files[i], str[i]);
+						printf("\033[1;92m\n%s: \033[0m%s", files[i], str[i]);
 				}
 				i++;
 			}
@@ -165,6 +200,6 @@ int	main(int ac, char **av)
 		}
 	}
 	else
-		printf("\033[1;31m\nEl formato especificado no es correcto. Pruebe con uno de los formatos siguientes:\033[0m\n\t\033[1;33m1.mandatory\n\t2.bonus\n\033[0m");
+		printf("\033[1;91m\nEl formato especificado no es correcto. Pruebe con uno de los formatos siguientes:\033[0m\n\t\033[1;93m1.mandatory\n\t2.bonus\n\033[0m");
 	return (0);
 }

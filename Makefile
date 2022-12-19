@@ -6,7 +6,7 @@
 #    By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/05 15:44:36 by eralonso          #+#    #+#              #
-#    Updated: 2022/11/10 12:16:27 by eralonso         ###   ########.fr        #
+#    Updated: 2022/12/19 13:28:56 by eralonso         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,12 +66,12 @@ ${NAME}		::
 -include	${DEP}
 
 clean		:
-	@${RM} ${ODIR} ./a.out
+	@${RM} ${ODIR}
 	@echo	"\033[1;31mObjects and dependencies have been removed\033[0m"
 
 fclean		:
 	@$(MAKE) clean
-	@${RM} ${NAME}
+	@${RM} ${NAME} ./a.out
 	@echo "\033[1;31mLibrary 'gnl' have been removed\033[0m"
 
 re			:

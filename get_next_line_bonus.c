@@ -6,7 +6,7 @@
 /*   By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 19:50:46 by eralonso          #+#    #+#             */
-/*   Updated: 2022/11/10 10:23:49 by eralonso         ###   ########.fr       */
+/*   Updated: 2022/11/10 13:17:33 by eralonso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,7 @@ void	ft_read_file(t_data *data)
 			data->err = !ft_free(&(data->buffer));
 		else
 		{
-			if (!*data->line && !data->buffer)
-				ft_free(&(data->buffer));
-			else
+			if (*data->line || data->buffer)
 			{
 				data->line[bytes] = '\0';
 				data->buffer = ft_strjoin(data->buffer, data->line);
@@ -57,7 +55,7 @@ void	ft_get_line(t_data *data)
 {
 	int	len;
 
-	if (!data->buffer || !*data->buffer)
+	if (!*data->buffer)
 	{
 		data->line = NULL;
 		return ;
@@ -75,8 +73,6 @@ void	ft_clean_buffer(t_data *data)
 	char	*aux;
 	int		start;
 
-	if (!data->buffer)
-		return ;
 	start = 0;
 	while (data->buffer[start] && data->buffer[start] != '\n')
 		start++;
@@ -99,14 +95,14 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
-	(data[fd]).fd = fd;
-	(data[fd]).err = 0;
 	if (!(data[fd]).buffer)
 	{
 		(data[fd]).buffer = ft_strdup("");
 		if (!(data[fd]).buffer)
 			return (NULL);
 	}
+	(data[fd]).fd = fd;
+	(data[fd]).err = 0;
 	if (!(data[fd]).err)
 		ft_read_file(&(data[fd]));
 	if (!(data[fd]).err)
