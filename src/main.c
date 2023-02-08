@@ -6,7 +6,7 @@
 /*   By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 23:21:41 by eralonso          #+#    #+#             */
-/*   Updated: 2022/12/19 13:27:36 by eralonso         ###   ########.fr       */
+/*   Updated: 2023/01/18 09:29:42 by eralonso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	ft_numdig(int *cls, int i)
 	{
 		if (cls[j] == i)
 			return (1);
-		j++;
+	j++;
 	}
 	return (0);
 }
@@ -97,7 +97,7 @@ int	main(int ac, char **av)
 
 	if (ac < 3)
 	{
-		printf("El número de parámetros és incorrecto\n");
+		printf("\033[1;33mModo de uso:\033[1;36m\n\n   ./gnl <mandataroy/bonus> <archivo/s>\033[0m\n\n");
 		return (0);
 	}
 	if (ft_strncmp(av[1], "mandatory"))
@@ -118,20 +118,20 @@ int	main(int ac, char **av)
 				fd[0] = open(files[i], O_RDONLY);
 			if (fd[0] == -1)
 			{
-				printf("\033[1;91mHa habido un problema a la hora de abrir el archivo.\nCompruebe que el archivo pasado está correcto.\n\033[0m");
+				printf("\033[1;91mHa habido un problema a la hora de abrir el archivo.\nCompruebe que el archivo pasado está correcto.\033[0m\n");
 				return (0);
 			}
-			printf("\033[1;92m\n%s\n\n\033[0m", files[i]);
+			printf("\033[1;92m\n%s\033[1;97m\n\n", files[i]);
 			str[0] = get_next_line(fd[0]);
 			while (str[0] && *(str[0]))
 			{
-				printf("\t\033[1;93mline %i:\033[0m %s", j, str[0]);
+				printf("\t\033[1;93mline %i:\033[1;97m %s", j, str[0]);
 				if (!ft_strchr(str[0], '\n'))
 					printf("\n");
 				str[0] = get_next_line(fd[0]);
 				j++;
 			}
-			printf("\tline %i: %s\n", j, str[0]);
+			printf("\t\033[1;93mline %i:\033[1;97m %s\n", j, str[0]);
 			close(fd[0]);
 		}
 	}

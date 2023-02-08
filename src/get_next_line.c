@@ -6,7 +6,7 @@
 /*   By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 19:50:46 by eralonso          #+#    #+#             */
-/*   Updated: 2022/11/10 13:17:08 by eralonso         ###   ########.fr       */
+/*   Updated: 2023/02/02 15:31:31 by eralonso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	ft_read_file(t_data *data)
 void	ft_get_line(t_data *data)
 {
 	int	len;
+	int	i;
 
 	if (!*data->buffer)
 	{
@@ -63,9 +64,16 @@ void	ft_get_line(t_data *data)
 	len = 0;
 	while (data->buffer[len] && data->buffer[len] != '\n')
 		len++;
-	data->line = ft_substr(data->buffer, 0, len + 1);
+	if (data->buffer[len] == '\n')
+		len++;
+	data->line = (char *)malloc(sizeof(char) * len + 1);
+	//data->line = ft_substr(data->buffer, 0, len + 1);
 	if (!data->line)
 		data->err = 1;
+	i = -1;
+	while (++i < len)
+		data->line[i] = data->buffer[i];
+	data->line[i] = '\0';
 }
 
 void	ft_clean_buffer(t_data *data)
@@ -73,17 +81,24 @@ void	ft_clean_buffer(t_data *data)
 	char	*aux;
 	int		start;
 
+	if (!ft_strchr(data->buffer, '\n'))
+	{
+		ft_free(&(data->buffer));
+		return ;
+	}
 	start = 0;
 	while (data->buffer[start] && data->buffer[start] != '\n')
 		start++;
-	aux = ft_strdup(data->buffer);
-	if (!aux)
-	{
-		data->err = !ft_free(&(data->buffer));
-		return ;
-	}
-	ft_free(&(data->buffer));
-	data->buffer = ft_substr(aux, start + 1, (ft_strlen(aux) - start));
+	aux = data->buffer;
+	data->buffer = ft_strdup(ft_strchr(data->buffer, '\n') + 1);
+	//aux = ft_strdup(data->buffer);
+	//if (!aux)
+	//{
+	//	data->err = !ft_free(&(data->buffer));
+	//	return ;
+	//}
+	//ft_free(&(data->buffer));
+	//data->buffer = ft_substr(aux, start + 1, (ft_strlen(aux) - start));
 	if (!data->buffer)
 		data->err = 1;
 	ft_free(&aux);
@@ -109,7 +124,7 @@ char	*get_next_line(int fd)
 		ft_get_line(&data);
 	if (!data.err)
 		ft_clean_buffer(&data);
-	if (data.err || !ft_strchr(data.line, '\n'))
+	if (data.err)// || !ft_strchr(data.line, '\n'))
 		ft_free(&(data.buffer));
 	return (data.line);
 }

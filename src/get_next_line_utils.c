@@ -6,11 +6,12 @@
 /*   By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 19:51:28 by eralonso          #+#    #+#             */
-/*   Updated: 2022/11/10 11:41:26 by eralonso         ###   ########.fr       */
+/*   Updated: 2023/02/02 15:12:06 by eralonso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"get_next_line.h"
+#include	<stdio.h>
 
 int	ft_strlen(char *str)
 {
@@ -98,7 +99,7 @@ char	*ft_substr(char *s, int start, int len)
 	if (!sub)
 		return (NULL);
 	i = 0;
-	while (i < len && s[start])
+	while (s[start] && i < len)
 	{
 		sub[i] = s[start++];
 		i++;

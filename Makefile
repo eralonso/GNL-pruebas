@@ -6,41 +6,50 @@
 #    By: eralonso <eralonso@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/05 15:44:36 by eralonso          #+#    #+#              #
-#    Updated: 2022/12/19 13:28:56 by eralonso         ###   ########.fr        #
+#    Updated: 2023/02/08 09:25:46 by eralonso         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	=	gnl.a
+NAME		=	gnl.a
 
-ODIR	=	obj/
+PROGRAM		=	gnl
 
-HEADER	=	./
+SDIR		=	./src/
+ODIR		=	./obj/
 
-INCLUDE	=	-I${HEADER}
+HEADER		=	./inc
 
-MK		=	Makefile
+INCLUDE		=	-I${HEADER}
 
-FILES	=	get_next_line get_next_line_utils
+MK			=	Makefile
 
-SRC		=	$(addsuffix .c, ${FILES})
-OBJ		=	$(addprefix ${ODIR}, $(addsuffix .o, ${FILES}))
-DEP		=	$(addsuffix .d, $(basename ${OBJ}))
+MAIN		=	main
 
-BFILES	=	$(addsuffix _bonus, ${FILES})
+SRCM		=	$(addprefix ${SDIR}, $(addsuffix .c, ${MAIN}))
+OBJM		=	$(addprefix ${ODIR}, $(addsuffix .o, ${MAIN}))
+DEPM		=	$(addsuffix .d, $(basename ${OBJM}))
 
-SRCB		=	$(addsuffix .c, ${BFILES})
+FILES		=	get_next_line get_next_line_utils
+
+SRC			=	$(addprefix ${SDIR}, $(addsuffix .c, ${FILES}))
+OBJ			=	$(addprefix ${ODIR}, $(addsuffix .o, ${FILES}))
+DEP			=	$(addsuffix .d, $(basename ${OBJ}))
+
+BFILES		=	$(addsuffix _bonus, ${FILES})
+
+SRCB		=	$(addprefix ${SDIR}, $(addsuffix .c, ${BFILES}))
 OBJB		=	$(addprefix ${ODIR}, $(addsuffix .o, ${BFILES}))
 DEPB		=	$(addsuffix .d, $(basename ${OBJB}))
 
-CFLAGS	=	-Wall -Wextra -Werror -D BUFFER_SIZE=10
-AR		=	ar -src
-RM		=	rm -rf
-MKD		=	mkdir -p
+CFLAGS		=	-Wall -Wextra -Werror -D BUFFER_SIZE=1000
+AR			=	ar -src
+RM			=	rm -rf
+MKD			=	mkdir -p
 
-${ODIR}%.o	:	%.c ${MK}
+${ODIR}%.o	:	${SDIR}%.c ${MK}
 	@${MKD} $(dir $@)
 	@${CC} -MT $@ ${CFLAGS} -MMD -MP ${INCLUDE} -c $< -o $@
-	@echo "\033[1;33mCompiling $< ...\033[0m"
+	@printf "\033[1;33m          \rCompiling \033[1;35m$(notdir $<)...                              \r\033[0m"
 
 all			:
 	@$(MAKE) ${NAME}
@@ -61,9 +70,13 @@ ${NAME}		:: ${OBJB}
 endif
 
 ${NAME}		::
+	@echo ""
 	@echo "\033[1;33mNothing to be done for 'gnl'\033[0m"
 
--include	${DEP}
+${PROGRAM}	:: ${OBJB} ${OBJM}
+	@${CC} ${CFLAGS} ${OBJM} gnl.a -o $@
+	@echo ""
+	@echo "\033[1;33mProgram: \033[1;31m$@ \033[1;32mhas been compiled\033[0m"
 
 clean		:
 	@${RM} ${ODIR}
@@ -71,12 +84,15 @@ clean		:
 
 fclean		:
 	@$(MAKE) clean
-	@${RM} ${NAME} ./a.out
+	@${RM} ${NAME} ${PROGRAM}
 	@echo "\033[1;31mLibrary 'gnl' have been removed\033[0m"
 
 re			:
 	@$(MAKE) fclean
 	@$(MAKE) all
-	@echo "\033[1;35mLibrary have been restored\033[0m"
+	@echo "\033[1;96mLibrary have been restored\033[0m"
 
 .PHONY: all clean fclean re
+
+-include	${DEP}
+-include	${DEPB}
